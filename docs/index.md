@@ -8,6 +8,8 @@ A reproducible Kotlin Multiplatform mobile CI sample built with Amper, Fastlane,
 
 ![Portable KMP CI architecture](./assets/portable-ci-architecture.svg)
 
+> CI YAML should decide when jobs run. The repository should decide what those jobs mean.
+
 ## Start Here
 
 - [Read the full article](./portable-kmp-ci/)
@@ -20,6 +22,14 @@ A reproducible Kotlin Multiplatform mobile CI sample built with Amper, Fastlane,
 - Fastlane as the command layer
 - Amper as the build system
 - a self-refreshing sample project scaffold
+
+## Why This Sample Exists
+
+Most CI examples stop at a workflow file. This one tries to show the whole pattern:
+
+- how to keep CI provider YAML thin
+- how to make the same jobs runnable locally
+- how to keep the sample refreshable as the Amper template evolves
 
 ## Local Maintenance
 
