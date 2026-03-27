@@ -47,6 +47,9 @@ CI pattern is reproducible with a minimal Kotlin Multiplatform project.
 For the longer explanation of the design, see
 [`docs/portable-kmp-ci.md`](docs/portable-kmp-ci.md).
 
+The published documentation site is available at:
+[https://mekate-studio.github.io/Portable-KMP-CI/](https://mekate-studio.github.io/Portable-KMP-CI/)
+
 It exercises:
 
 - Android debug and release builds
