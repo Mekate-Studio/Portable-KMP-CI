@@ -27,6 +27,8 @@ the repository, and let the CI adapter stay thin.
 That decision produced a Kotlin Multiplatform mobile CI setup that is easier to
 run locally, easier to explain, and easier to share with other teams.
 
+![Portable KMP CI architecture](./assets/portable-ci-architecture.svg)
+
 ## The real problem with mobile CI
 
 Kotlin Multiplatform mobile CI is not hard because any single step is unusual.
@@ -125,6 +127,31 @@ It also includes a `jvm-app/` module. This sample removes that module to keep
 the public story focused on Android, iOS, and shared code.
 
 This repository is that trimmed public sample.
+
+
+## What changed from the raw Amper template?
+
+The sample starts from `amper init compose-multiplatform`, but it does not stop
+there.
+
+![What changed from raw Amper template](./assets/amper-template-delta.svg)
+
+The main edits that turn the generated app into a reusable CI sample are:
+
+- remove `jvm-app/` and the JVM-specific shared sources and tests
+- lock `project.yaml` to `android-app`, `ios-app`, and `shared`
+- add Android-specific settings such as namespace, application ID, SDK levels,
+  and version fields
+- add the GitHub Actions workflow, Fastlane files, and shared `scripts/ci/`
+  layer
+- add a few practical support files such as the Android keystore example,
+  shared Android manifest, and ProGuard placeholder
+- add `./scripts/regenerate_from_amper.sh` so the sample can be rebuilt from a
+  fresh Amper template when the scaffolding changes
+
+That combination keeps the sample honest: it stays close to the generated Amper
+baseline while still exercising the CI architecture that the article is trying
+to teach.
 
 ## The sample can regenerate itself
 
@@ -379,3 +406,10 @@ If the practical reproduction steps are the priority, start with the
 [README](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/README.md).
 If the practical maintenance story is the priority, start with
 [`./scripts/regenerate_from_amper.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh).
+
+## View source on GitHub
+
+- [Repository root](https://github.com/Mekate-Studio/Portable-KMP-CI)
+- [Article source](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/docs/portable-kmp-ci.md)
+- [CI workflow](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
+- [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh)
