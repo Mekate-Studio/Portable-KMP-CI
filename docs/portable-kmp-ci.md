@@ -70,11 +70,11 @@ Once that principle is applied, the architecture gets much simpler:
 
 In this sample repository, the layers look like this:
 
-- [`.github/workflows/mobile-ci.yml`](../.github/workflows/mobile-ci.yml)
-- [`scripts/ci/run_job.sh`](../scripts/ci/run_job.sh)
-- [`scripts/ci/lib/`](../scripts/ci/lib)
-- [`fastlane/Fastfile`](../fastlane/Fastfile)
-- [`project.yaml`](../project.yaml)
+- [`.github/workflows/mobile-ci.yml`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
+- [`scripts/ci/run_job.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/run_job.sh)
+- [`scripts/ci/lib/`](https://github.com/Mekate-Studio/Portable-KMP-CI/tree/main/scripts/ci/lib)
+- [`fastlane/Fastfile`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/fastlane/Fastfile)
+- [`project.yaml`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/project.yaml)
 
 The pipeline now has a stable contract that lives inside the repo.
 
@@ -194,7 +194,7 @@ That is the difference between orchestration and implementation.
 
 ## The dispatcher is where the pipeline becomes understandable
 
-The shared entrypoint is [`scripts/ci/run_job.sh`](../scripts/ci/run_job.sh).
+The shared entrypoint is [`scripts/ci/run_job.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/run_job.sh).
 
 It answers the question every pipeline eventually needs to answer clearly:
 
@@ -224,7 +224,7 @@ entire CI environment.
 ## The helper scripts do the quiet work that usually clutters pipelines
 
 Most of the portability comes from the helper layer under
-[`scripts/ci/lib/`](../scripts/ci/lib).
+[`scripts/ci/lib/`](https://github.com/Mekate-Studio/Portable-KMP-CI/tree/main/scripts/ci/lib).
 
 That layer is responsible for:
 
@@ -277,9 +277,9 @@ This repository does not commit signing files or API keys.
 Instead, release-oriented jobs materialize them at runtime through small helper
 scripts:
 
-- [`scripts/ci/write_android_signing_files.sh`](../scripts/ci/write_android_signing_files.sh)
-- [`scripts/ci/write_google_play_key.sh`](../scripts/ci/write_google_play_key.sh)
-- [`scripts/ci/write_app_store_connect_api_key.sh`](../scripts/ci/write_app_store_connect_api_key.sh)
+- [`scripts/ci/write_android_signing_files.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/write_android_signing_files.sh)
+- [`scripts/ci/write_google_play_key.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/write_google_play_key.sh)
+- [`scripts/ci/write_app_store_connect_api_key.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/write_app_store_connect_api_key.sh)
 
 There is still one unavoidable caveat on the iOS side: Apple certificates and
 provisioning profiles have to exist on the macOS runner that performs the
@@ -376,5 +376,6 @@ fragile automation and more like an actual system that can be understood,
 debugged, and shared.
 
 If the practical reproduction steps are the priority, start with the
-[README](../README.md). If the practical maintenance story is the priority,
-start with [`./scripts/regenerate_from_amper.sh`](../scripts/regenerate_from_amper.sh).
+[README](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/README.md).
+If the practical maintenance story is the priority, start with
+[`./scripts/regenerate_from_amper.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh).

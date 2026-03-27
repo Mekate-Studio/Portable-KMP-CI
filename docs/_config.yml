@@ -1,4 +1,4 @@
-title: Portable KMP CI Sample
+title: 
 description: A reproducible Kotlin Multiplatform mobile CI sample built with Amper, Fastlane, and GitHub Actions.
 theme: minima
 markdown: kramdown
