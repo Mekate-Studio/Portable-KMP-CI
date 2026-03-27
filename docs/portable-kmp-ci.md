@@ -1,3 +1,8 @@
+---
+title: Stop Putting Your Kotlin Multiplatform CI Logic in YAML
+permalink: /portable-kmp-ci/
+---
+
 # Stop Putting Your Kotlin Multiplatform CI Logic in YAML
 
 This project did not start as an attempt to invent a "portable CI
