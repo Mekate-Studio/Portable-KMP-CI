@@ -1,0 +1,16 @@
+.DS_Store
+/.gradle/
+/.gradle-user-home/
+/.amper/
+/.amper-cache/
+/build/
+/android-app/build/
+/ios-app/build/
+/shared/build/
+/fastlane/AuthKey.p8
+/google_play_api_key.json
+/local.properties
+/.idea/
+/android-app/keystore.properties
+/android-app/*.jks
+/android-app/*.keystore

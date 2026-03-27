@@ -1,0 +1,23 @@
+product: android/app
+
+dependencies:
+  - ../shared
+  - androidx.activity:activity-compose:1.7.2
+
+settings:
+  compose: enabled
+  junit: junit-4
+  android:
+    namespace: com.example.kmpci
+    applicationId: com.example.kmpci
+    minSdk: 23
+    compileSdk: 36
+    targetSdk: 36
+    # Enable this block when wiring real Android release signing for store
+    # publishing. It is left disabled by default so the sample repo can run its
+    # build/test CI jobs without release secrets.
+    # signing:
+    #   enabled: true
+    #   propertiesFile: ./keystore.properties
+    versionCode: 1
+    versionName: "1.0-local"

@@ -1,0 +1,4 @@
+json_key_file(ENV.fetch("GOOGLE_PLAY_JSON_KEY_FILE", ""))
+package_name(ENV.fetch("ANDROID_PACKAGE_NAME", "com.example.kmpci"))
+app_identifier(ENV.fetch("IOS_BUNDLE_IDENTIFIER", ""))
+team_id(ENV.fetch("IOS_DEVELOPMENT_TEAM", "")) if ENV["IOS_DEVELOPMENT_TEAM"]

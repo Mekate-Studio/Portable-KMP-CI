@@ -1,0 +1,207 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+require "shellwords"
+
+default_platform(:android)
+
+def project_root
+  File.expand_path("..", __dir__)
+end
+
+def amper_path
+  File.join(project_root, "amper")
+end
+
+def amper_cache_dir
+  ENV["AMPER_BOOTSTRAP_CACHE_DIR"] || File.join(project_root, ".amper-cache")
+end
+
+def amper!(command)
+  sh("cd '#{project_root}' && AMPER_BOOTSTRAP_CACHE_DIR='#{amper_cache_dir}' '#{amper_path}' #{command}")
+end
+
+def latest_android_artifact!(pattern: "build/**/*.{apk,aab}")
+  candidates = Dir[File.join(project_root, pattern)]
+  UI.user_error!("No Android artifact found under build/") if candidates.empty?
+
+  candidates.max_by { |path| File.mtime(path) }
+end
+
+def latest_ios_ipa!(pattern: "build/ios/**/*.ipa")
+  candidates = Dir[File.join(project_root, pattern)]
+  UI.user_error!("No iOS ipa found under build/ios/") if candidates.empty?
+
+  candidates.max_by { |path| File.mtime(path) }
+end
+
+def ios_ipa_path
+  ENV["IOS_IPA_PATH"]
+end
+
+def ios_project_path
+  File.join(project_root, "ios-app", "module.xcodeproj")
+end
+
+def ios_scheme
+  ENV.fetch("IOS_SCHEME", "app")
+end
+
+def ios_bundle_identifier!
+  ENV.fetch("IOS_BUNDLE_IDENTIFIER")
+end
+
+def ios_development_team!
+  ENV.fetch("IOS_DEVELOPMENT_TEAM")
+end
+
+def ios_provisioning_profile_specifier!
+  ENV.fetch("IOS_PROVISIONING_PROFILE_SPECIFIER")
+end
+
+def ios_version
+  ENV.fetch("IOS_VERSION", "1.0")
+end
+
+def ios_build_number
+  ENV.fetch("IOS_BUILD_NUMBER", ENV.fetch("CI_PIPELINE_IID", "1"))
+end
+
+def shell_escape(value)
+  Shellwords.escape(value)
+end
+
+def app_store_connect_api_key_from_env!
+  app_store_connect_api_key(
+    key_id: ENV.fetch("APP_STORE_CONNECT_KEY_ID"),
+    issuer_id: ENV.fetch("APP_STORE_CONNECT_ISSUER_ID"),
+    key_filepath: ENV.fetch("APP_STORE_CONNECT_API_KEY_FILE"),
+    in_house: false
+  )
+end
+
+def android_play_release_status
+  ENV.fetch("ANDROID_PLAY_RELEASE_STATUS", "draft")
+end
+
+def android_release_artifact!
+  latest_android_artifact!(pattern: "build/**/*release*.{apk,aab}")
+end
+
+def android_release_upload_options
+  artifact = android_release_artifact!
+
+  {
+    track: "internal",
+    release_status: android_play_release_status,
+    aab: File.extname(artifact) == ".aab" ? artifact : nil,
+    apk: File.extname(artifact) == ".apk" ? artifact : nil
+  }
+end
+
+def ios_export_options
+  {
+    method: "app-store",
+    signingStyle: "manual",
+    teamID: ios_development_team!,
+    provisioningProfiles: {
+      ios_bundle_identifier! => ios_provisioning_profile_specifier!
+    }
+  }
+end
+
+def ios_xcargs
+  [
+    "DEVELOPMENT_TEAM=#{shell_escape(ios_development_team!)}",
+    "PRODUCT_BUNDLE_IDENTIFIER=#{shell_escape(ios_bundle_identifier!)}",
+    "PROVISIONING_PROFILE_SPECIFIER=#{shell_escape(ios_provisioning_profile_specifier!)}",
+    "MARKETING_VERSION=#{shell_escape(ios_version)}",
+    "CURRENT_PROJECT_VERSION=#{shell_escape(ios_build_number)}"
+  ].join(" ")
+end
+
+def resolved_ios_ipa!
+  if ios_ipa_path && File.exist?(ios_ipa_path)
+    ios_ipa_path
+  elsif Dir[File.join(project_root, "build", "ios", "**", "*.ipa")].empty?
+    buildRelease
+  else
+    latest_ios_ipa!
+  end
+end
+
+platform :android do
+
+  desc "Builds the debug code"
+  lane :buildDebug do
+    amper!("build -m android-app -p android -v debug")
+  end
+
+  desc "Builds the release code"
+  lane :buildRelease do
+    amper!("build -m android-app -p android -v release")
+    sh("cd '#{project_root}' && ./scripts/ci/build_android_aab.sh")
+  end
+
+  desc "Runs all the tests"
+  lane :test do
+    amper!("test -m shared -p android")
+  end
+
+  desc "Submit a new Internal Build to Play Store"
+  lane :internal do
+    upload_to_play_store(**android_release_upload_options)
+  end
+
+  desc "Promote Internal to Alpha"
+  lane :promote_internal_to_alpha do
+    upload_to_play_store(track: 'internal', track_promote_to: 'alpha')
+  end
+
+  desc "Promote Alpha to Beta"
+  lane :promote_alpha_to_beta do
+    upload_to_play_store(track: 'alpha', track_promote_to: 'beta')
+  end
+
+  desc "Promote Beta to Production"
+  lane :promote_beta_to_production do
+    upload_to_play_store(track: 'beta', track_promote_to: 'production')
+  end
+end
+
+platform :ios do
+  desc "Builds the iOS app for release/TestFlight delivery"
+  lane :buildRelease do
+    build_ios_app(
+      project: ios_project_path,
+      scheme: ios_scheme,
+      configuration: "Release",
+      clean: true,
+      export_method: "app-store",
+      export_options: ios_export_options,
+      xcargs: ios_xcargs,
+      output_directory: File.join(project_root, "build", "ios"),
+      output_name: "ios-app"
+    )
+  end
+
+  desc "Uploads a signed iOS release build to TestFlight"
+  lane :uploadTestFlight do
+    api_key = app_store_connect_api_key_from_env!
+
+    upload_to_testflight(
+      api_key: api_key,
+      ipa: resolved_ios_ipa!,
+      skip_waiting_for_build_processing: true
+    )
+  end
+end

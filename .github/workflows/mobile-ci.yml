@@ -1,0 +1,235 @@
+name: Mobile CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      release_target:
+        description: "Manual release flow to run"
+        required: true
+        default: none
+        type: choice
+        options:
+          - none
+          - publishInternal
+          - promoteAlpha
+          - promoteBeta
+          - promoteProduction
+          - iosArchiveRelease
+          - iosTestFlight
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mobile-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+  AMPER_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.amper-cache
+
+jobs:
+  android_build_debug:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Build Android debug
+        run: ./scripts/ci/run_job.sh android-build-debug
+
+  android_build_release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Build Android release
+        run: ./scripts/ci/run_job.sh android-build-release
+      - name: Upload Android artifacts
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-build
+          path: build
+
+  android_test:
+    runs-on: macos-15
+    needs:
+      - android_build_debug
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Run Android tests
+        run: ./scripts/ci/run_job.sh android-test
+
+  ios_build_debug:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Build iOS debug
+        run: ./scripts/ci/run_job.sh ios-build-debug
+
+  ios_build_release:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Build iOS release
+        run: ./scripts/ci/run_job.sh ios-build-release
+
+  ios_archive_release:
+    if: github.event_name == 'workflow_dispatch' && contains(fromJson('["iosArchiveRelease","iosTestFlight"]'), github.event.inputs.release_target) && github.ref_name == env.DEFAULT_BRANCH
+    needs:
+      - ios_build_release
+    runs-on: macos-15
+    environment: ios-release
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Archive iOS release
+        run: ./scripts/ci/run_job.sh ios-archive-release
+      - name: Upload iOS archive
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-archive
+          path: build/ios
+
+  ios_testflight:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'iosTestFlight' && github.ref_name == env.DEFAULT_BRANCH
+    needs:
+      - ios_archive_release
+    runs-on: macos-15
+    environment: testflight
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - name: Download iOS archive
+        uses: actions/download-artifact@v4
+        with:
+          name: ios-archive
+          path: build/ios
+      - name: Upload to TestFlight
+        run: ./scripts/ci/run_job.sh ios-testflight
+
+  publish_internal:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'publishInternal'
+    needs:
+      - android_build_release
+    runs-on: macos-15
+    environment: play-internal
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Download Android release build
+        uses: actions/download-artifact@v4
+        with:
+          name: android-release-build
+          path: build
+      - name: Publish internal track
+        run: ./scripts/ci/run_job.sh publish-internal
+
+  promote_alpha:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'promoteAlpha'
+    runs-on: macos-15
+    environment: play-alpha
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Promote internal to alpha
+        run: ./scripts/ci/run_job.sh promote-alpha
+
+  promote_beta:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'promoteBeta'
+    runs-on: macos-15
+    environment: play-beta
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Promote alpha to beta
+        run: ./scripts/ci/run_job.sh promote-beta
+
+  promote_production:
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'promoteProduction' && github.ref_name == env.DEFAULT_BRANCH
+    runs-on: macos-15
+    environment: play-production
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+      - uses: android-actions/setup-android@v3
+      - name: Promote beta to production
+        run: ./scripts/ci/run_job.sh promote-production
