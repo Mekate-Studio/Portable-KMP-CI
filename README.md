@@ -86,6 +86,27 @@ can contend with each other.
 can still depend on the host having a resolvable iPhone simulator destination.
 For a portable local smoke test, `ios-build-debug` is the safer baseline check.
 
+## Self-hosted GitHub Actions verification
+
+If you want to verify the workflow using real GitHub Actions orchestration on
+your own Mac, this repo also includes:
+
+- [`.github/workflows/mobile-ci-self-hosted.yml`](.github/workflows/mobile-ci-self-hosted.yml)
+
+That workflow is intended for a self-hosted macOS runner with the label:
+
+- `kmp-sample`
+
+Recommended setup:
+
+1. Add your Mac as a self-hosted runner for this repository in GitHub.
+2. Give it the labels `self-hosted`, `macOS`, `ARM64`, and `kmp-sample`.
+3. Run the `Mobile CI (Self-hosted)` workflow manually from GitHub using
+   `workflow_dispatch`.
+
+For a public repository, keep this self-hosted workflow on manual dispatch only.
+That avoids exposing your machine to arbitrary fork pull requests.
+
 ## Shared CI job names
 
 These are the portable job names used by the dispatcher:
