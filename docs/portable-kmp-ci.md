@@ -56,6 +56,10 @@ That creates a few predictable problems:
 
 The issue is not YAML itself. The issue is putting too much meaning into it.
 
+One practical note from running this sample on real runners: the current Amper
+Android integration expects Java 21. That is why the workflows in this repo now
+pin Temurin 21 instead of Java 17.
+
 ## The shift that made this manageable
 
 This setup is built around one idea:
@@ -342,6 +346,11 @@ export AMPER_BOOTSTRAP_CACHE_DIR="$PWD/.amper-cache"
 ./scripts/ci/run_job.sh android-test
 ./scripts/ci/run_job.sh ios-build-debug
 ```
+
+For current Amper-based Android builds, local reproduction also assumes JDK 21.
+On self-hosted macOS runners, this sample also expects a host-installed Ruby,
+preferably from Homebrew, and lets the shared CI helper install the Bundler
+version required by `Gemfile.lock`.
 
 That changes debugging completely.
 
