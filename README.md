@@ -66,6 +66,9 @@ Set a writable Amper cache:
 export AMPER_BOOTSTRAP_CACHE_DIR="$PWD/.amper-cache"
 ```
 
+Use JDK 21 for local runs. The GitHub Actions workflows in this repo also pin
+Temurin 21 because the current Amper Android integration requires it.
+
 Run the shared jobs:
 
 ```bash

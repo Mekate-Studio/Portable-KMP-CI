@@ -190,10 +190,10 @@ A typical job becomes little more than:
 
 ```yaml
 - uses: actions/checkout@v4
-- uses: actions/setup-java@v4
-  with:
-    distribution: temurin
-    java-version: "17"
+    - uses: actions/setup-java@v4
+      with:
+        distribution: temurin
+        java-version: "21"
 - uses: ruby/setup-ruby@v1
   with:
     bundler-cache: true
