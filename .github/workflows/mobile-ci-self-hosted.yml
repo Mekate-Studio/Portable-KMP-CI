@@ -54,7 +54,7 @@ jobs:
         run: ./scripts/ci/run_job.sh android-build-release
       - name: Upload Android artifacts
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: android-release-build
           path: build
@@ -111,7 +111,7 @@ jobs:
         run: ./scripts/ci/run_job.sh ios-archive-release
       - name: Upload iOS archive
         if: success()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: ios-archive
           path: build/ios
