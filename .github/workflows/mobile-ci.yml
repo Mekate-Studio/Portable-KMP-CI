@@ -113,7 +113,7 @@ jobs:
         run: ./scripts/ci/run_job.sh ios-build-release
 
   ios_archive_release:
-    if: github.event_name == 'workflow_dispatch' && contains(fromJson('["iosArchiveRelease","iosTestFlight"]'), github.event.inputs.release_target) && github.ref_name == env.DEFAULT_BRANCH
+    if: github.event_name == 'workflow_dispatch' && contains(fromJson('["iosArchiveRelease","iosTestFlight"]'), github.event.inputs.release_target) && github.ref_name == github.event.repository.default_branch
     needs:
       - ios_build_release
     runs-on: macos-15
@@ -137,7 +137,7 @@ jobs:
           path: build/ios
 
   ios_testflight:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'iosTestFlight' && github.ref_name == env.DEFAULT_BRANCH
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'iosTestFlight' && github.ref_name == github.event.repository.default_branch
     needs:
       - ios_archive_release
     runs-on: macos-15
@@ -218,7 +218,7 @@ jobs:
         run: ./scripts/ci/run_job.sh promote-beta
 
   promote_production:
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'promoteProduction' && github.ref_name == env.DEFAULT_BRANCH
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.release_target == 'promoteProduction' && github.ref_name == github.event.repository.default_branch
     runs-on: macos-15
     environment: play-production
     steps:
