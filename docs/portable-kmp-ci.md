@@ -21,8 +21,8 @@ At some point, the YAML stops being orchestration and starts becoming the
 application. Local reproduction gets harder. Migrating between CI providers
 gets expensive. Debugging turns into archaeology.
 
-The approach in this sample takes a different route: move the job contract into
-the repository, and let the CI adapter stay thin.
+I took a different route: move the job contract into the repository, and let
+the CI adapter stay thin.
 
 That decision produced a Kotlin Multiplatform mobile CI setup that is easier to
 run locally, easier to explain, and easier to share with other teams.
@@ -56,7 +56,7 @@ That creates a few predictable problems:
 
 The issue is not YAML itself. The issue is putting too much meaning into it.
 
-One practical note from running this sample on real runners: the current Amper
+One practical note from running this on real runners: the current Amper
 Android integration expects Java 21. That is why the workflows in this repo now
 pin Temurin 21 instead of Java 17.
 
@@ -80,9 +80,10 @@ Once that principle is applied, the architecture gets much simpler:
 4. Fastlane provides the build and release command layer.
 5. Amper remains the actual build system.
 
-In this sample repository, the layers look like this:
+In this repository, the layers look like this:
 
 - [`.github/workflows/mobile-ci.yml`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
+- [`.gitlab-ci.yml`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.gitlab-ci.yml)
 - [`scripts/ci/run_job.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/ci/run_job.sh)
 - [`scripts/ci/lib/`](https://github.com/Mekate-Studio/Portable-KMP-CI/tree/main/scripts/ci/lib)
 - [`fastlane/Fastfile`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/fastlane/Fastfile)
@@ -136,7 +137,7 @@ The generated project already includes:
 It also includes a `jvm-app/` module. This sample removes that module to keep
 the public story focused on Android, iOS, and shared code.
 
-This repository is that trimmed public sample.
+That is the trimmed public sample.
 
 
 ## What changed from the raw Amper template?
@@ -160,8 +161,7 @@ The main edits that turn the generated app into a reusable CI sample are:
   fresh Amper template when the scaffolding changes
 
 That combination keeps the sample honest: it stays close to the generated Amper
-baseline while still exercising the CI architecture that the article is trying
-to teach.
+baseline while still exercising the CI architecture I want to teach.
 
 ## The sample can regenerate itself
 
@@ -184,7 +184,7 @@ It deletes and recreates the generated app layer:
 - `ios-app/`
 - `shared/`
 
-while preserving the CI files and release helpers that belong to this sample.
+while preserving the CI files and release helpers that make this setup work.
 
 That gives the project a much better maintenance story. When Amper changes, the
 sample can be refreshed from a command instead of being rewritten by hand.
@@ -228,6 +228,28 @@ And it is not doing a bunch of things it should not do:
 - invent a second command system
 
 That is the difference between orchestration and implementation.
+
+## The portability claim should be visible in the repo
+
+One of the easiest ways to undermine a "portable CI" story is to only publish
+one CI adapter.
+
+That is why I include both a GitHub Actions workflow and a GitLab CI file:
+
+- [GitHub Actions adapter](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
+- [GitLab CI adapter](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.gitlab-ci.yml)
+
+They are deliberately boring in the same way. They define orchestration
+details, then they both call the same shared dispatcher:
+
+```bash
+./scripts/ci/run_job.sh android-build-debug
+./scripts/ci/run_job.sh android-test
+./scripts/ci/run_job.sh ios-build-debug
+```
+
+That matters because portability is no longer just a design claim. It is
+visible in the repository layout itself.
 
 ## The dispatcher is where the pipeline becomes understandable
 
@@ -354,11 +376,11 @@ export AMPER_BOOTSTRAP_CACHE_DIR="$PWD/.amper-cache"
 ```
 
 For current Amper-based Android builds, local reproduction also assumes JDK 21.
-On self-hosted macOS runners, this sample also expects a host-installed Ruby,
+On self-hosted macOS runners, I also expect a host-installed Ruby,
 preferably from Homebrew, and lets the shared CI helper install the Bundler
 version required by `Gemfile.lock`.
 
-The iOS build jobs in this sample use a generic iOS Simulator destination for
+The iOS build jobs here use a generic iOS Simulator destination for
 `xcodebuild`, but they also force a single simulator architecture that matches
 the host machine. That avoids depending on a precreated simulator device while
 also avoiding Amper's current limitation around multi-architecture simulator
@@ -440,4 +462,5 @@ If the practical maintenance story is the priority, start with
 - [Repository root](https://github.com/Mekate-Studio/Portable-KMP-CI)
 - [Article source](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/docs/portable-kmp-ci.md)
 - [CI workflow](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
+- [GitLab CI adapter](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.gitlab-ci.yml)
 - [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh)

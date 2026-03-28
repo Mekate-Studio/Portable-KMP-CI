@@ -1,0 +1,140 @@
+stages:
+  - build
+  - test
+  - internal
+  - alpha
+  - beta
+  - testflight
+  - production
+
+variables:
+  AMPER_BOOTSTRAP_CACHE_DIR: "$CI_PROJECT_DIR/.amper-cache"
+  LANG: "en_US.UTF-8"
+  LC_ALL: "en_US.UTF-8"
+
+cache:
+  key: amper-cache
+  paths:
+    - .amper-cache/
+
+.android_job:
+  tags:
+    - macos
+
+.build_job:
+  extends: .android_job
+  stage: build
+  artifacts:
+    paths:
+      - build
+
+.ios_job:
+  tags:
+    - macos
+
+.ios_fastlane_job:
+  extends: .ios_job
+
+.ios_testflight_job:
+  extends: .ios_fastlane_job
+
+buildDebug:
+  extends: .build_job
+  script:
+    - ./scripts/ci/run_job.sh android-build-debug
+
+buildRelease:
+  extends: .build_job
+  script:
+    - ./scripts/ci/run_job.sh android-build-release
+  environment:
+    name: production
+
+testDebug:
+  extends: .android_job
+  stage: test
+  dependencies:
+    - buildDebug
+  script:
+    - ./scripts/ci/run_job.sh android-test
+
+iosBuildDebug:
+  extends: .ios_job
+  stage: build
+  script:
+    - ./scripts/ci/run_job.sh ios-build-debug
+  artifacts:
+    paths:
+      - build/logs
+      - build/xcode-derived-data
+      - ios-app/module.xcodeproj
+
+iosBuildRelease:
+  extends: .ios_job
+  stage: build
+  script:
+    - ./scripts/ci/run_job.sh ios-build-release
+  artifacts:
+    paths:
+      - build/logs
+      - build/xcode-derived-data
+      - ios-app/module.xcodeproj
+
+iosArchiveRelease:
+  extends: .ios_fastlane_job
+  stage: build
+  when: manual
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ./scripts/ci/run_job.sh ios-archive-release
+  artifacts:
+    when: always
+    paths:
+      - build/ios
+      - ios-app/module.xcodeproj
+
+iosTestFlight:
+  extends: .ios_testflight_job
+  stage: testflight
+  when: manual
+  dependencies:
+    - iosArchiveRelease
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ./scripts/ci/run_job.sh ios-testflight
+
+.promote_job:
+  extends: .android_job
+  when: manual
+  dependencies: [ ]
+
+publishInternal:
+  extends: .promote_job
+  stage: internal
+  dependencies:
+    - buildRelease
+  when: manual
+  script:
+    - ./scripts/ci/run_job.sh publish-internal
+
+promoteAlpha:
+  extends: .promote_job
+  stage: alpha
+  script:
+    - ./scripts/ci/run_job.sh promote-alpha
+
+promoteBeta:
+  extends: .promote_job
+  stage: beta
+  script:
+    - ./scripts/ci/run_job.sh promote-beta
+
+promoteProduction:
+  extends: .promote_job
+  stage: production
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+  script:
+    - ./scripts/ci/run_job.sh promote-production

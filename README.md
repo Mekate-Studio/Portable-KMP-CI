@@ -1,7 +1,7 @@
 # Portable KMP CI Sample
 
 This repository is a minimal Kotlin Multiplatform sample for a portable mobile
-CI setup built with Amper, Fastlane, and GitHub Actions.
+CI setup built with Amper, Fastlane, GitHub Actions, and GitLab CI.
 
 It is intentionally small:
 
@@ -9,6 +9,7 @@ It is intentionally small:
 - `ios-app/`
 - `shared/`
 - `.github/workflows/mobile-ci.yml`
+- `.gitlab-ci.yml`
 - `fastlane/`
 - `scripts/ci/`
 - `scripts/regenerate_from_amper.sh`
@@ -57,6 +58,12 @@ It exercises:
 - iOS debug and release builds
 - shared CI job dispatch
 - runtime secret materialization for release flows
+
+It also shows the same repo-owned job contract through multiple CI adapters:
+
+- GitHub Actions via [`.github/workflows/mobile-ci.yml`](.github/workflows/mobile-ci.yml)
+- GitHub self-hosted verification via [`.github/workflows/mobile-ci-self-hosted.yml`](.github/workflows/mobile-ci-self-hosted.yml)
+- GitLab CI via [`.gitlab-ci.yml`](.gitlab-ci.yml)
 
 ## Local smoke test
 
@@ -124,6 +131,23 @@ Recommended setup:
 
 For a public repository, keep this self-hosted workflow on manual dispatch only.
 That avoids exposing your machine to arbitrary fork pull requests.
+
+## GitLab CI parity
+
+This repository also includes [`.gitlab-ci.yml`](.gitlab-ci.yml) as a thin
+GitLab adapter for the same shared job contract.
+
+That file intentionally stays small: it defines stages, tags, and artifacts,
+then calls the same `./scripts/ci/run_job.sh ...` entrypoint used by the
+GitHub workflows.
+
+If you are copying this setup into GitLab, the main repo-owned logic does not
+change. The GitLab adapter only needs to express:
+
+- which runner tags should pick up a job
+- which stage a job belongs to
+- which artifacts should be preserved
+- which jobs are manual or default-branch-only
 
 ## Shared CI job names
 
