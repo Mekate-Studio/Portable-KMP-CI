@@ -29,7 +29,6 @@ cmd=(
   -configuration "${configuration}"
   -sdk iphonesimulator
   -destination "generic/platform=iOS Simulator"
-  -arch "${simulator_arch}"
   -derivedDataPath "${derived_data_dir}"
   ONLY_ACTIVE_ARCH=YES
   ARCHS="${simulator_arch}"
