@@ -101,8 +101,10 @@ Recommended setup:
 
 1. Add your Mac as a self-hosted runner for this repository in GitHub.
 2. Give it the labels `self-hosted`, `macOS`, `ARM64`, and `kmp-sample`.
-3. Install a working host Ruby and Bundler on that Mac runner. This sample's
-   self-hosted workflow intentionally uses the machine's Ruby instead of
+3. Install a working host Ruby on that Mac runner, preferably via
+   `brew install ruby`. The shared CI helper will install the Bundler version
+   required by `Gemfile.lock` automatically. This sample's self-hosted
+   workflow intentionally uses the machine's Ruby instead of
    `ruby/setup-ruby`, because `ruby/setup-ruby` expects the GitHub-hosted
    macOS toolcache layout under `/Users/runner`.
 4. Run the `Mobile CI (Self-hosted)` workflow manually from GitHub using

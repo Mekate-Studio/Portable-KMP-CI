@@ -37,11 +37,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Build Android debug
         run: ./scripts/ci/run_job.sh android-build-debug
@@ -54,11 +49,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Build Android release
         run: ./scripts/ci/run_job.sh android-build-release
@@ -79,11 +69,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Run Android tests
         run: ./scripts/ci/run_job.sh android-test
@@ -96,11 +81,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - name: Build iOS debug
         run: ./scripts/ci/run_job.sh ios-build-debug
 
@@ -112,11 +92,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - name: Build iOS release
         run: ./scripts/ci/run_job.sh ios-build-release
 
@@ -132,11 +107,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - name: Archive iOS release
         run: ./scripts/ci/run_job.sh ios-archive-release
       - name: Upload iOS archive
@@ -158,11 +128,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - name: Download iOS archive
         uses: actions/download-artifact@v4
         with:
@@ -183,11 +148,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Download Android release build
         uses: actions/download-artifact@v4
@@ -207,11 +167,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote internal to alpha
         run: ./scripts/ci/run_job.sh promote-alpha
@@ -226,11 +181,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote alpha to beta
         run: ./scripts/ci/run_job.sh promote-beta
@@ -245,11 +195,6 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - name: Verify host Ruby and Bundler
-        shell: bash
-        run: |
-          ruby --version
-          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote beta to production
         run: ./scripts/ci/run_job.sh promote-production

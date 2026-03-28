@@ -111,19 +111,39 @@ ci_configure_path() {
 }
 
 ci_bundle_install() {
+  local required_bundler=""
+
   ci_configure_path
   ci_require_cmd ruby
-  ci_require_cmd bundle
+  ruby --version
+
+  required_bundler="$(awk '/^BUNDLED WITH$/{getline; gsub(/^[[:space:]]+/, ""); print; exit}' "${CI_PROJECT_DIR}/Gemfile.lock" 2>/dev/null || true)"
+
+  if [[ -n "${required_bundler}" ]]; then
+    ci_log "bundler_required=${required_bundler}"
+
+    if ! bundle "_${required_bundler}_" --version >/dev/null 2>&1; then
+      ci_log "Installing bundler ${required_bundler}"
+      gem install bundler -v "${required_bundler}" --no-document
+    fi
+
+    bundle "_${required_bundler}_" --version
+  else
+    ci_require_cmd bundle
+    bundle --version
+  fi
 
   ci_log "ruby=$(command -v ruby)"
   ci_log "bundle=$(command -v bundle)"
   ci_log "java=$(command -v java)"
-  ruby --version
-  bundle --version
 
   (
     cd "${CI_PROJECT_DIR}"
-    bundle install
+    if [[ -n "${required_bundler}" ]]; then
+      bundle "_${required_bundler}_" install
+    else
+      bundle install
+    fi
   )
 }
 
