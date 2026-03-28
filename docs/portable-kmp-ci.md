@@ -60,6 +60,12 @@ One practical note from running this sample on real runners: the current Amper
 Android integration expects Java 21. That is why the workflows in this repo now
 pin Temurin 21 instead of Java 17.
 
+Another practical note: the iOS build-only jobs use a generic iOS Simulator
+destination, but they also force a single simulator architecture matching the
+host. That avoids depending on a precreated simulator device while still
+working around Amper's current limitation around multi-architecture simulator
+builds.
+
 ## The shift that made this manageable
 
 This setup is built around one idea:
@@ -194,10 +200,10 @@ A typical job becomes little more than:
 
 ```yaml
 - uses: actions/checkout@v4
-    - uses: actions/setup-java@v4
-      with:
-        distribution: temurin
-        java-version: "21"
+- uses: actions/setup-java@v4
+  with:
+    distribution: temurin
+    java-version: "21"
 - uses: ruby/setup-ruby@v1
   with:
     bundler-cache: true
