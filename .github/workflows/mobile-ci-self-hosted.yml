@@ -33,18 +33,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Build Android debug
         run: ./scripts/ci/run_job.sh android-build-debug
@@ -53,18 +50,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Build Android release
         run: ./scripts/ci/run_job.sh android-build-release
@@ -81,18 +75,15 @@ jobs:
       - android_build_debug
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Run Android tests
         run: ./scripts/ci/run_job.sh android-test
@@ -101,18 +92,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - name: Build iOS debug
         run: ./scripts/ci/run_job.sh ios-build-debug
 
@@ -120,18 +108,15 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - name: Build iOS release
         run: ./scripts/ci/run_job.sh ios-build-release
 
@@ -143,18 +128,15 @@ jobs:
     environment: ios-release
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - name: Archive iOS release
         run: ./scripts/ci/run_job.sh ios-archive-release
       - name: Upload iOS archive
@@ -172,18 +154,15 @@ jobs:
     environment: testflight
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - name: Download iOS archive
         uses: actions/download-artifact@v4
         with:
@@ -200,18 +179,15 @@ jobs:
     environment: play-internal
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Download Android release build
         uses: actions/download-artifact@v4
@@ -227,18 +203,15 @@ jobs:
     environment: play-alpha
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote internal to alpha
         run: ./scripts/ci/run_job.sh promote-alpha
@@ -249,18 +222,15 @@ jobs:
     environment: play-beta
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote alpha to beta
         run: ./scripts/ci/run_job.sh promote-beta
@@ -271,18 +241,15 @@ jobs:
     environment: play-production
     steps:
       - uses: actions/checkout@v4
-      - name: Normalize HOME on macOS
-        shell: bash
-        run: |
-          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
-          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: "17"
-      - uses: ruby/setup-ruby@v1
-        with:
-          bundler-cache: true
+      - name: Verify host Ruby and Bundler
+        shell: bash
+        run: |
+          ruby --version
+          bundle --version
       - uses: android-actions/setup-android@v3
       - name: Promote beta to production
         run: ./scripts/ci/run_job.sh promote-production
