@@ -85,9 +85,11 @@ Run those smoke-test commands sequentially when using a single local checkout.
 In CI they run in separate jobs, but locally multiple first-run Amper processes
 can contend with each other.
 
-The iOS build jobs target a generic iOS Simulator destination, so they do not
-depend on a precreated iPhone simulator device. The remaining host requirement
-is that Xcode has an iOS Simulator runtime installed.
+The iOS build jobs target a generic iOS Simulator destination and then force a
+single simulator architecture that matches the host machine. That avoids both a
+precreated device dependency and Amper's current limitation around building
+multiple simulator architectures in one pass. The remaining host requirement is
+that Xcode has an iOS Simulator runtime installed.
 
 On GitHub-hosted macOS images, Simulator runtime availability can still vary
 with runner image updates. If an iOS build fails because no iOS Simulator

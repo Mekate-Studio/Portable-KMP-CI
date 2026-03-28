@@ -23,8 +23,16 @@ ci_prepare_workspace() {
 }
 
 ci_set_java_home() {
+  local preferred_java_home=""
+
   if [[ -x /usr/libexec/java_home ]]; then
-    export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+    preferred_java_home="$(/usr/libexec/java_home -v 21 2>/dev/null || true)"
+
+    if [[ -n "${preferred_java_home}" ]]; then
+      export JAVA_HOME="${JAVA_HOME:-${preferred_java_home}}"
+    else
+      export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+    fi
   fi
 
   if [[ -n "${JAVA_HOME:-}" ]]; then

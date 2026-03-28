@@ -13,8 +13,14 @@ project_root="$(cd "$(dirname "$0")/../.." && pwd)"
 log_dir="${project_root}/build/logs"
 derived_data_dir="${project_root}/build/xcode-derived-data"
 log_file="${log_dir}/xcodebuild-ios-${configuration}.log"
+host_arch="$(uname -m)"
+simulator_arch="arm64"
 
 mkdir -p "${log_dir}" "${derived_data_dir}"
+
+if [[ "${host_arch}" == "x86_64" ]]; then
+  simulator_arch="x86_64"
+fi
 
 cmd=(
   xcodebuild
@@ -23,7 +29,10 @@ cmd=(
   -configuration "${configuration}"
   -sdk iphonesimulator
   -destination "generic/platform=iOS Simulator"
+  -arch "${simulator_arch}"
   -derivedDataPath "${derived_data_dir}"
+  ONLY_ACTIVE_ARCH=YES
+  ARCHS="${simulator_arch}"
   CODE_SIGNING_ALLOWED=NO
   CODE_SIGNING_REQUIRED=NO
   build

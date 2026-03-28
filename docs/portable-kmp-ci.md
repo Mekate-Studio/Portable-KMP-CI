@@ -353,9 +353,11 @@ preferably from Homebrew, and lets the shared CI helper install the Bundler
 version required by `Gemfile.lock`.
 
 The iOS build jobs in this sample use a generic iOS Simulator destination for
-`xcodebuild`. That avoids depending on a precreated simulator device for simple
-build-only validation jobs. The remaining requirement is that the runner still
-has an iOS Simulator runtime installed in Xcode.
+`xcodebuild`, but they also force a single simulator architecture that matches
+the host machine. That avoids depending on a precreated simulator device while
+also avoiding Amper's current limitation around multi-architecture simulator
+builds. The remaining requirement is that the runner still has an iOS
+Simulator runtime installed in Xcode.
 
 That distinction matters on GitHub-hosted macOS images. A repository can avoid
 depending on a specific device, but it cannot force the hosted image to ship a
