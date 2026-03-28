@@ -457,6 +457,59 @@ If the practical reproduction steps are the priority, start with the
 If the practical maintenance story is the priority, start with
 [`./scripts/regenerate_from_amper.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh).
 
+## Trade-offs and when this approach is worth it
+
+This approach is not universally better. It is a deliberate trade-off that favors **portability, local reproducibility, and long-term maintainability** over short-term CI-provider convenience.
+
+### Increased upfront design effort
+
+A repository-defined pipeline requires a clearer execution contract from the start. Compared to writing provider-specific CI YAML directly, this usually means more initial design effort.
+
+The cost is front-loaded, but the payoff is a delivery model that is easier to evolve over time.
+
+### More responsibility in the repository
+
+Moving delivery logic into the repository means scripts and orchestration code become part of the system design. That improves portability, but it also means these scripts need to be treated with the same care as production code.
+
+That includes:
+
+- clear naming
+- coherent structure
+- reviewability
+- maintainability
+
+### Less dependence on CI-native conveniences
+
+A thin CI model intentionally reduces reliance on provider-specific features. That can mean giving up some convenience in exchange for portability.
+
+This approach does not try to maximize what GitHub Actions or GitLab CI can do individually. It tries to minimize how much the pipeline depends on either of them.
+
+### Team adoption and learning curve
+
+Teams used to YAML-centric pipelines may need time to adapt to a repository-first mental model. The shift is conceptual as much as technical: the pipeline is no longer “something in CI”, but part of the repository’s executable contract.
+
+### Not always necessary
+
+For small projects, short-lived codebases, or teams with no need to move across environments, a simpler provider-specific CI setup may be perfectly adequate.
+
+This approach becomes more valuable when:
+
+- the system is expected to live for a long time
+- the pipeline will evolve significantly
+- local reproducibility matters
+- portability across providers or environments is a real concern
+
+### Design intent
+
+This model intentionally optimizes for:
+
+- repository-owned delivery behavior
+- reproducible local execution
+- lower CI-provider coupling
+- clearer portability boundaries
+
+That makes it a good fit for engineering teams that treat delivery as part of the software system itself, not just as CI configuration.
+
 ## View source on GitHub
 
 - [Repository root](https://github.com/Mekate-Studio/Portable-KMP-CI)
