@@ -1,0 +1,126 @@
+name: Dependency Refresh
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 5 * * 1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: dependency-refresh-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+  AMPER_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.amper-cache
+
+jobs:
+  refresh_gemfile_lock:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Update Bundler lockfile
+        run: bundle update fastlane
+
+      - name: Smoke test portable Android debug job
+        run: ./scripts/ci/run_job.sh android-build-debug
+
+      - name: Detect Gemfile changes
+        id: gem_changes
+        run: |
+          if git diff --quiet -- Gemfile.lock; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Gemfile refresh PR
+        if: steps.gem_changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/dependency-refresh-bundler
+          delete-branch: true
+          commit-message: "chore(deps): refresh Gemfile.lock"
+          title: "chore(deps): refresh Gemfile.lock"
+          body: |
+            Automated weekly Bundler refresh.
+
+            Changes in this PR:
+            - updates `Gemfile.lock` via `bundle update fastlane`
+            - runs the portable Android debug smoke job
+          labels: |
+            dependencies
+            ruby
+
+  refresh_amper_template:
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - uses: android-actions/setup-android@v3
+
+      - name: Regenerate Amper app layer
+        run: ./scripts/regenerate_from_amper.sh
+
+      - name: Smoke test portable Android debug job
+        run: ./scripts/ci/run_job.sh android-build-debug
+
+      - name: Detect regenerated changes
+        id: amper_changes
+        run: |
+          if git diff --quiet -- \
+            amper \
+            amper.bat \
+            project.yaml \
+            android-app \
+            ios-app \
+            shared; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create Amper refresh PR
+        if: steps.amper_changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          branch: chore/dependency-refresh-amper
+          delete-branch: true
+          commit-message: "chore(amper): refresh generated app layer"
+          title: "chore(amper): refresh generated app layer"
+          body: |
+            Automated weekly Amper regeneration.
+
+            Changes in this PR:
+            - reruns `./scripts/regenerate_from_amper.sh`
+            - captures template and generated dependency drift
+            - runs the portable Android debug smoke job
+          labels: |
+            dependencies
+            amper
