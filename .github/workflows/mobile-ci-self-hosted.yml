@@ -33,6 +33,11 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -48,6 +53,11 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -71,6 +81,11 @@ jobs:
       - android_build_debug
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -86,6 +101,11 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -100,6 +120,11 @@ jobs:
     runs-on: [self-hosted, macOS, ARM64, kmp-sample]
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -118,6 +143,11 @@ jobs:
     environment: ios-release
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -142,6 +172,11 @@ jobs:
     environment: testflight
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -165,6 +200,11 @@ jobs:
     environment: play-internal
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -187,6 +227,11 @@ jobs:
     environment: play-alpha
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -204,6 +249,11 @@ jobs:
     environment: play-beta
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -221,6 +271,11 @@ jobs:
     environment: play-production
     steps:
       - uses: actions/checkout@v4
+      - name: Normalize HOME on macOS
+        shell: bash
+        run: |
+          REAL_HOME="$(dscl . -read "/Users/$(whoami)" NFSHomeDirectory | awk '{print $2}')"
+          echo "HOME=${REAL_HOME}" >> "$GITHUB_ENV"
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
