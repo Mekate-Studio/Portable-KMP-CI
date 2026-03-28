@@ -16,35 +16,13 @@ log_file="${log_dir}/xcodebuild-ios-${configuration}.log"
 
 mkdir -p "${log_dir}" "${derived_data_dir}"
 
-simulator_id="$(
-  xcodebuild \
-    -project "${project_root}/ios-app/module.xcodeproj" \
-    -scheme app \
-    -sdk iphonesimulator \
-    -showdestinations 2>/dev/null | sed -n '
-      /Available destinations for the "app" scheme:/,/Ineligible destinations/ {
-        /platform:iOS Simulator/ {
-          /name:iPhone/ {
-            s/.*id:\([^,}]*\).*/\1/p
-            q
-          }
-        }
-      }
-    '
-)"
-
-if [[ -z "${simulator_id}" ]]; then
-  echo "No available iPhone simulator found on this runner" >&2
-  exit 1
-fi
-
 cmd=(
   xcodebuild
   -project "${project_root}/ios-app/module.xcodeproj"
   -scheme app
   -configuration "${configuration}"
   -sdk iphonesimulator
-  -destination "id=${simulator_id}"
+  -destination "generic/platform=iOS Simulator"
   -derivedDataPath "${derived_data_dir}"
   CODE_SIGNING_ALLOWED=NO
   CODE_SIGNING_REQUIRED=NO

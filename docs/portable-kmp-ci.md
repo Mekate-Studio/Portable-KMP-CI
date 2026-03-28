@@ -352,6 +352,17 @@ On self-hosted macOS runners, this sample also expects a host-installed Ruby,
 preferably from Homebrew, and lets the shared CI helper install the Bundler
 version required by `Gemfile.lock`.
 
+The iOS build jobs in this sample use a generic iOS Simulator destination for
+`xcodebuild`. That avoids depending on a precreated simulator device for simple
+build-only validation jobs. The remaining requirement is that the runner still
+has an iOS Simulator runtime installed in Xcode.
+
+That distinction matters on GitHub-hosted macOS images. A repository can avoid
+depending on a specific device, but it cannot force the hosted image to ship a
+Simulator runtime that is not installed. When that happens, the remaining fix
+is to select an image or Xcode version that includes a runtime, or to install
+one explicitly as part of runner provisioning.
+
 That changes debugging completely.
 
 If a shared job works locally, then most remaining failures are usually much

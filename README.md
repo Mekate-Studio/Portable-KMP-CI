@@ -85,9 +85,14 @@ Run those smoke-test commands sequentially when using a single local checkout.
 In CI they run in separate jobs, but locally multiple first-run Amper processes
 can contend with each other.
 
-`ios-build-release` is part of the sample workflow too, but on local machines it
-can still depend on the host having a resolvable iPhone simulator destination.
-For a portable local smoke test, `ios-build-debug` is the safer baseline check.
+The iOS build jobs target a generic iOS Simulator destination, so they do not
+depend on a precreated iPhone simulator device. The remaining host requirement
+is that Xcode has an iOS Simulator runtime installed.
+
+On GitHub-hosted macOS images, Simulator runtime availability can still vary
+with runner image updates. If an iOS build fails because no iOS Simulator
+runtime is installed, the remaining fix is at the runner-image level: select an
+image/Xcode combination that includes a runtime, or install one explicitly.
 
 ## Self-hosted GitHub Actions verification
 
