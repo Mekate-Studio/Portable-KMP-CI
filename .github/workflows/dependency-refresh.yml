@@ -33,7 +33,7 @@ jobs:
         with:
           bundler-cache: true
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: Update Bundler lockfile
         run: bundle update fastlane
@@ -83,7 +83,7 @@ jobs:
         with:
           bundler-cache: true
 
-      - uses: android-actions/setup-android@v3
+      - uses: android-actions/setup-android@v4
 
       - name: Regenerate Amper app layer
         run: ./scripts/regenerate_from_amper.sh
