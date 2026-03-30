@@ -129,7 +129,7 @@ jobs:
           distribution: temurin
           java-version: "21"
       - name: Download iOS archive
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: ios-archive
           path: build/ios
@@ -150,7 +150,7 @@ jobs:
           java-version: "21"
       - uses: android-actions/setup-android@v3
       - name: Download Android release build
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           name: android-release-build
           path: build
