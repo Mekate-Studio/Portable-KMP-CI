@@ -35,6 +35,11 @@ jobs:
 
       - uses: android-actions/setup-android@v4
 
+      - name: Allow Bundler lockfile updates
+        run: |
+          bundle config set --local frozen false
+          bundle config set --local deployment false
+
       - name: Update Bundler lockfile
         run: bundle update fastlane
 
