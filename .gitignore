@@ -14,3 +14,5 @@
 /android-app/keystore.properties
 /android-app/*.jks
 /android-app/*.keystore
+fastlane/report.xml
+fastlane/README.md
