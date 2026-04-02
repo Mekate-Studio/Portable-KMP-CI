@@ -381,11 +381,13 @@ preferably from Homebrew, and lets the shared CI helper install the Bundler
 version required by `Gemfile.lock`.
 
 The iOS build jobs here use a generic iOS Simulator destination for
-`xcodebuild`, but they also force a single simulator architecture that matches
-the host machine. That avoids depending on a precreated simulator device while
-also avoiding Amper's current limitation around multi-architecture simulator
-builds. The remaining requirement is that the runner still has an iOS
-Simulator runtime installed in Xcode.
+`xcodebuild`, and the CLI wrapper keeps `SWIFT_ENABLE_EXPLICIT_MODULES=NO`
+for the command-line path. This repo still preserves a single simulator
+architecture override through `ONLY_ACTIVE_ARCH` and `ARCHS`, because the
+current Amper-backed Kotlin build phase rejects multi-architecture simulator
+builds. That keeps the build independent from a precreated device while also
+respecting Amper's current limitation. The remaining requirement is still that
+the runner has an iOS Simulator runtime installed in Xcode.
 
 That distinction matters on GitHub-hosted macOS images. A repository can avoid
 depending on a specific device, but it cannot force the hosted image to ship a

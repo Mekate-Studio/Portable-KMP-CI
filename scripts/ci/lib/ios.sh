@@ -8,8 +8,16 @@ ci_prepare_ios_job() {
   ci_set_java_home
   ci_resolve_android_sdk_root || true
   ci_configure_path
+  export SWIFT_ENABLE_EXPLICIT_MODULES="${SWIFT_ENABLE_EXPLICIT_MODULES:-NO}"
+  local host_arch="$(uname -m)"
+  export IOS_SIMULATOR_ARCH="${IOS_SIMULATOR_ARCH:-arm64}"
+  if [[ "${host_arch}" == "x86_64" ]]; then
+    export IOS_SIMULATOR_ARCH="${IOS_SIMULATOR_ARCH:-x86_64}"
+  fi
   ci_require_cmd xcodebuild
   xcodebuild -version
+  printf 'Using SWIFT_ENABLE_EXPLICIT_MODULES: %s\n' "${SWIFT_ENABLE_EXPLICIT_MODULES}"
+  printf 'Using IOS_SIMULATOR_ARCH: %s\n' "${IOS_SIMULATOR_ARCH}"
   ci_log_android_sdk_env
 }
 

@@ -16,24 +16,27 @@ log_file="${log_dir}/xcodebuild-ios-${configuration}.log"
 host_arch="$(uname -m)"
 simulator_arch="arm64"
 
-mkdir -p "${log_dir}" "${derived_data_dir}"
-
 if [[ "${host_arch}" == "x86_64" ]]; then
   simulator_arch="x86_64"
 fi
+
+mkdir -p "${log_dir}" "${derived_data_dir}"
+
+echo "Using SWIFT_ENABLE_EXPLICIT_MODULES=${SWIFT_ENABLE_EXPLICIT_MODULES:-NO}"
+echo "Using simulator architecture=${simulator_arch}"
 
 cmd=(
   xcodebuild
   -project "${project_root}/ios-app/module.xcodeproj"
   -scheme app
   -configuration "${configuration}"
-  -sdk iphonesimulator
   -destination "generic/platform=iOS Simulator"
   -derivedDataPath "${derived_data_dir}"
-  ONLY_ACTIVE_ARCH=YES
-  ARCHS="${simulator_arch}"
   CODE_SIGNING_ALLOWED=NO
   CODE_SIGNING_REQUIRED=NO
+  ONLY_ACTIVE_ARCH=YES
+  "ARCHS=${simulator_arch}"
+  "SWIFT_ENABLE_EXPLICIT_MODULES=${SWIFT_ENABLE_EXPLICIT_MODULES:-NO}"
   build
 )
 
