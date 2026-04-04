@@ -57,7 +57,7 @@ jobs:
 
       - name: Create Gemfile refresh PR
         if: steps.gem_changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/dependency-refresh-bundler
           delete-branch: true
@@ -113,7 +113,7 @@ jobs:
 
       - name: Create Amper refresh PR
         if: steps.amper_changes.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           branch: chore/dependency-refresh-amper
           delete-branch: true
