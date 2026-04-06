@@ -1,0 +1,18 @@
+current directory: /Users/runner/work/Portable-KMP-CI/Portable-KMP-CI/vendor/bundle/ruby/3.4.0/gems/nkf-0.2.0/ext/nkf
+/Users/runner/hostedtoolcache/Ruby/3.4.9/arm64/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /Users/runner/work/Portable-KMP-CI/Portable-KMP-CI/vendor/bundle/ruby/3.4.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20260328-1638-5976ku sitelibdir\=./.gem.20260328-1638-5976ku clean
+
+current directory: /Users/runner/work/Portable-KMP-CI/Portable-KMP-CI/vendor/bundle/ruby/3.4.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20260328-1638-5976ku sitelibdir\=./.gem.20260328-1638-5976ku
+compiling nkf.c
+linking shared-object nkf.bundle
+
+current directory: /Users/runner/work/Portable-KMP-CI/Portable-KMP-CI/vendor/bundle/ruby/3.4.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20260328-1638-5976ku sitelibdir\=./.gem.20260328-1638-5976ku install
+/usr/bin/install -c -m 0755 nkf.bundle ./.gem.20260328-1638-5976ku
+
+current directory: /Users/runner/work/Portable-KMP-CI/Portable-KMP-CI/vendor/bundle/ruby/3.4.0/gems/nkf-0.2.0/ext/nkf
+make DESTDIR\= sitearchdir\=./.gem.20260328-1638-5976ku sitelibdir\=./.gem.20260328-1638-5976ku clean

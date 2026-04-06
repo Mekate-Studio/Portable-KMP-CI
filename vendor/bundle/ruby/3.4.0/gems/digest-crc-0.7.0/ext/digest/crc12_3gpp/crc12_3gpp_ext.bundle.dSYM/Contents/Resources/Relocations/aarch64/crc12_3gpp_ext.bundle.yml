@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     crc12_3gpp_ext.bundle
+relocations:     []
+...

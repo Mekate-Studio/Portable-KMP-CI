@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     crc16_xmodem_ext.bundle
+relocations:     []
+...
