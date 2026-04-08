@@ -37,7 +37,12 @@ export GRADLE_USER_HOME="${GRADLE_USER_HOME:-${project_root}/.gradle-user-home}"
 mkdir -p "${GRADLE_USER_HOME}"
 
 if [[ -x /usr/libexec/java_home ]]; then
-  export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+  preferred_java_home="$(/usr/libexec/java_home -v 21 2>/dev/null || true)"
+  if [[ -n "${preferred_java_home}" ]]; then
+    export JAVA_HOME="${JAVA_HOME:-${preferred_java_home}}"
+  else
+    export JAVA_HOME="${JAVA_HOME:-$(/usr/libexec/java_home)}"
+  fi
 fi
 
 gradle_bin="$(resolve_gradle_bin)"
