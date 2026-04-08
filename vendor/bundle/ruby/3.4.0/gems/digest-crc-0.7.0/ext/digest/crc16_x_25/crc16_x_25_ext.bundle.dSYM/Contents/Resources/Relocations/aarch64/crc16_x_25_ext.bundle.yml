@@ -1,0 +1,5 @@
+---
+triple:          'arm64-apple-darwin'
+binary-path:     crc16_x_25_ext.bundle
+relocations:     []
+...
