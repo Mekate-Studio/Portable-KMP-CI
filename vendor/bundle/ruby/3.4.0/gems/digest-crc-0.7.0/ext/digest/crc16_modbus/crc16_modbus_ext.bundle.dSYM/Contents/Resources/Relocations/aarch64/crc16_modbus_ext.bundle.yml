@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     crc16_modbus_ext.bundle
-relocations:     []
-...

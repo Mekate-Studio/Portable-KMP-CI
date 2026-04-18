@@ -1,5 +1,0 @@
----
-triple:          'arm64-apple-darwin'
-binary-path:     crc8_ext.bundle
-relocations:     []
-...

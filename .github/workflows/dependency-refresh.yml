@@ -35,16 +35,18 @@ jobs:
 
       - uses: android-actions/setup-android@v4
 
-      - name: Allow Bundler lockfile updates
-        run: |
-          bundle config set --local frozen false
-          bundle config set --local deployment false
-
       - name: Update Bundler lockfile
         run: bundle update fastlane
+        env:
+          BUNDLE_FROZEN: "false"
+          BUNDLE_DEPLOYMENT: "false"
 
       - name: Smoke test portable Android debug job
         run: ./scripts/ci/run_job.sh android-build-debug
+
+      - name: Reset installed gems and local Bundler config
+        run: |
+          git restore .bundle/config vendor/bundle || true
 
       - name: Detect Gemfile changes
         id: gem_changes
@@ -61,6 +63,8 @@ jobs:
         with:
           branch: chore/dependency-refresh-bundler
           delete-branch: true
+          add-paths: |
+            Gemfile.lock
           commit-message: "chore(deps): refresh Gemfile.lock"
           title: "chore(deps): refresh Gemfile.lock"
           body: |
