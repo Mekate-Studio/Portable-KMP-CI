@@ -36,6 +36,11 @@ case "${job_name}" in
     cd "${CI_PROJECT_DIR}"
     ./scripts/ci/run_xcodebuild_with_logs.sh Debug "$@"
     ;;
+  ios-test)
+    ci_prepare_ios_job
+    cd "${CI_PROJECT_DIR}"
+    ./scripts/ci/run_xcode_tests_with_logs.sh "$@"
+    ;;
   ios-build-release)
     ci_prepare_ios_job
     cd "${CI_PROJECT_DIR}"
@@ -85,6 +90,7 @@ case "${job_name}" in
       android-build-release \
       android-test \
       ios-build-debug \
+      ios-test \
       ios-build-release \
       ios-archive-release \
       ios-testflight \
