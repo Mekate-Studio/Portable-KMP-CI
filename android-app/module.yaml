@@ -19,5 +19,5 @@ settings:
     # signing:
     #   enabled: true
     #   propertiesFile: ./keystore.properties
-    versionCode: 6
-    versionName: "1.0-e20a907b"
+    versionCode: 11
+    versionName: "1.0-83a62608"
