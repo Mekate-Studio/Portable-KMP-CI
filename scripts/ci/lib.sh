@@ -6,7 +6,7 @@ ci_lib_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 ci_project_root="$(cd "${ci_lib_dir}/../.." && pwd)"
 
 export CI_PROJECT_DIR="${CI_PROJECT_DIR:-${ci_project_root}}"
-export AMPER_BOOTSTRAP_CACHE_DIR="${AMPER_BOOTSTRAP_CACHE_DIR:-${CI_PROJECT_DIR}/.amper-cache}"
+export KOTLIN_CLI_BOOTSTRAP_CACHE_DIR="${KOTLIN_CLI_BOOTSTRAP_CACHE_DIR:-${CI_PROJECT_DIR}/.kotlin-cli-cache}"
 
 # shellcheck source=./lib/common.sh
 source "${ci_lib_dir}/lib/common.sh"

@@ -7,11 +7,11 @@ repo_root="$(cd "${script_dir}/.." && pwd)"
 
 template="compose-multiplatform"
 android_package="com.example.kmpci"
-shared_caches_root="${AMPER_SHARED_CACHES_ROOT:-}"
-amper_cli="${AMPER_CLI:-}"
+shared_cache_dir="${KOTLIN_SHARED_CACHE_DIR:-}"
+kotlin_cli="${KOTLIN_CLI:-}"
 generated_paths=(
-  "amper"
-  "amper.bat"
+  "kotlin"
+  "kotlin.bat"
   "project.yaml"
   "android-app"
   "ios-app"
@@ -21,14 +21,14 @@ generated_paths=(
 
 usage() {
   cat <<EOF2
-Usage: $(basename "$0") [--template <name>] [--android-package <package>] [--shared-caches-root <path>] [--amper <path>]
+Usage: $(basename "$0") [--template <name>] [--android-package <package>] [--shared-cache-dir <path>] [--kotlin <path>]
 
-Deletes and regenerates the Amper-generated app layer in place while preserving
-the CI overlay files that make this sample repo publishable.
+Deletes and regenerates the Kotlin Toolchain-generated app layer in place while
+preserving the CI overlay files that make this sample repo publishable.
 
 This refreshes:
-  amper
-  amper.bat
+  kotlin
+  kotlin.bat
   project.yaml
   android-app/
   ios-app/
@@ -37,8 +37,8 @@ This refreshes:
 Defaults:
   --template ${template}
   --android-package ${android_package}
-  --shared-caches-root <default Amper location>
-  --amper <repo ./amper wrapper or amper from PATH>
+  --shared-cache-dir <default Kotlin Toolchain location>
+  --kotlin <repo ./kotlin wrapper or kotlin from PATH>
 EOF2
 }
 
@@ -52,12 +52,12 @@ while [[ $# -gt 0 ]]; do
       android_package="${2:?Missing value for --android-package}"
       shift 2
       ;;
-    --shared-caches-root)
-      shared_caches_root="${2:?Missing value for --shared-caches-root}"
+    --shared-cache-dir|--shared-caches-root)
+      shared_cache_dir="${2:?Missing value for $1}"
       shift 2
       ;;
-    --amper)
-      amper_cli="${2:?Missing value for --amper}"
+    --kotlin)
+      kotlin_cli="${2:?Missing value for $1}"
       shift 2
       ;;
     -h|--help)
@@ -72,23 +72,23 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-resolve_amper_cli() {
-  if [[ -n "${amper_cli}" ]]; then
-    printf '%s\n' "${amper_cli}"
+resolve_kotlin_cli() {
+  if [[ -n "${kotlin_cli}" ]]; then
+    printf '%s\n' "${kotlin_cli}"
     return
   fi
 
-  if [[ -x "${repo_root}/amper" ]]; then
-    printf '%s\n' "${repo_root}/amper"
+  if [[ -x "${repo_root}/kotlin" ]]; then
+    printf '%s\n' "${repo_root}/kotlin"
     return
   fi
 
-  if command -v amper >/dev/null 2>&1; then
-    command -v amper
+  if command -v kotlin >/dev/null 2>&1; then
+    command -v kotlin
     return
   fi
 
-  printf 'Could not find an Amper CLI. Expected ./amper in the repo root or amper on PATH.\n' >&2
+  printf 'Could not find a Kotlin Toolchain CLI. Expected ./kotlin in the repo root or kotlin on PATH.\n' >&2
   exit 1
 }
 
@@ -103,7 +103,7 @@ purge_generated_paths() {
 
 work_dir="$(mktemp -d "${TMPDIR:-/tmp}/kmp-ci-sample-standalone.XXXXXX")"
 generated_dir="${work_dir}/generated"
-amper_bin="$(resolve_amper_cli)"
+kotlin_bin="$(resolve_kotlin_cli)"
 
 cleanup() {
   rm -rf "${work_dir}"
@@ -113,13 +113,13 @@ trap cleanup EXIT
 
 mkdir -p "${generated_dir}"
 
-printf 'Generating fresh Amper project with template %s...\n' "${template}"
+printf 'Generating fresh Kotlin Toolchain project with template %s...\n' "${template}"
 (
   cd "${generated_dir}"
-  if [[ -n "${shared_caches_root}" ]]; then
-    "${amper_bin}" --shared-caches-root "${shared_caches_root}" init "${template}"
+  if [[ -n "${shared_cache_dir}" ]]; then
+    "${kotlin_bin}" --shared-cache-dir "${shared_cache_dir}" init "${template}"
   else
-    "${amper_bin}" init "${template}"
+    "${kotlin_bin}" init "${template}"
   fi
 )
 
@@ -185,16 +185,23 @@ awk -v package_name="${android_package}" '
 mv "${tmp_file}" "${generated_dir}/android-app/module.yaml"
 
 printf 'Deleting previously generated app files...\n'
+if [[ -f "${repo_root}/kotlin.bat" && ! -f "${generated_dir}/kotlin.bat" ]]; then
+  cp "${repo_root}/kotlin.bat" "${work_dir}/kotlin.bat"
+fi
 purge_generated_paths "${repo_root}"
 
 printf 'Copying regenerated app files into %s...\n' "${repo_root}"
-cp "${generated_dir}/amper" "${repo_root}/amper"
-cp "${generated_dir}/amper.bat" "${repo_root}/amper.bat"
+cp "${generated_dir}/kotlin" "${repo_root}/kotlin"
+if [[ -f "${generated_dir}/kotlin.bat" ]]; then
+  cp "${generated_dir}/kotlin.bat" "${repo_root}/kotlin.bat"
+elif [[ -f "${work_dir}/kotlin.bat" ]]; then
+  cp "${work_dir}/kotlin.bat" "${repo_root}/kotlin.bat"
+fi
 cp "${generated_dir}/project.yaml" "${repo_root}/project.yaml"
 cp -R "${generated_dir}/android-app" "${repo_root}/android-app"
 cp -R "${generated_dir}/ios-app" "${repo_root}/ios-app"
 cp -R "${generated_dir}/shared" "${repo_root}/shared"
-chmod +x "${repo_root}/amper"
+chmod +x "${repo_root}/kotlin"
 
 cat > "${repo_root}/android-app/keystore.properties.example" <<EOF2
 storeFile=./keystore.jks

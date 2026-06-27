@@ -56,14 +56,14 @@ That creates a few predictable problems:
 
 The issue is not YAML itself. The issue is putting too much meaning into it.
 
-One practical note from running this on real runners: the current Amper
+One practical note from running this on real runners: the current Kotlin Toolchain
 Android integration expects Java 21. That is why the workflows in this repo now
 pin Temurin 21 instead of Java 17.
 
 Another practical note: the iOS build-only jobs use a generic iOS Simulator
 destination, but they also force a single simulator architecture matching the
 host. That avoids depending on a precreated simulator device while still
-working around Amper's current limitation around multi-architecture simulator
+working around Kotlin Toolchain's current limitation around multi-architecture simulator
 builds.
 
 ## The shift that made this manageable
@@ -78,7 +78,7 @@ Once that principle is applied, the architecture gets much simpler:
 2. A shared repository script decides what that job means.
 3. Helper scripts prepare the environment the same way everywhere.
 4. Fastlane provides the build and release command layer.
-5. Amper remains the actual build system.
+5. Kotlin Toolchain remains the actual build system.
 
 In this repository, the layers look like this:
 
@@ -110,17 +110,17 @@ vocabulary. They let local development and CI talk about the same operations.
 They make it obvious what belongs in the repo and what belongs in the CI
 adapter.
 
-## Start with Amper, not with a handcrafted demo app
+## Start with Kotlin Toolchain, not with a handcrafted demo app
 
 One of the strongest parts of this workflow is that it starts from a generated
 project instead of a hand-assembled example.
 
-The Amper CLI can scaffold a strong starting point:
+The Kotlin CLI can scaffold a strong starting point:
 
 ```bash
 mkdir my-kmp-ci-app
 cd my-kmp-ci-app
-amper init compose-multiplatform
+kotlin init compose-multiplatform
 ```
 
 That matters because it gives readers a command they can run, not just a repo
@@ -132,7 +132,7 @@ The generated project already includes:
 - `ios-app/`
 - `shared/`
 - `project.yaml`
-- checked-in `amper` wrappers
+- checked-in `kotlin` wrappers
 
 It also includes a `jvm-app/` module. This sample removes that module to keep
 the public story focused on Android, iOS, and shared code.
@@ -140,12 +140,12 @@ the public story focused on Android, iOS, and shared code.
 That is the trimmed public sample.
 
 
-## What changed from the raw Amper template?
+## What changed from the raw Kotlin Toolchain template?
 
-The sample starts from `amper init compose-multiplatform`, but it does not stop
+The sample starts from `kotlin init compose-multiplatform`, but it does not stop
 there.
 
-![What changed from raw Amper template](./assets/amper-template-delta.svg)
+![What changed from raw Kotlin Toolchain template](./assets/kotlin-toolchain-template-delta.svg)
 
 The main edits that turn the generated app into a reusable CI sample are:
 
@@ -157,10 +157,10 @@ The main edits that turn the generated app into a reusable CI sample are:
   layer
 - add a few practical support files such as the Android keystore example,
   shared Android manifest, and ProGuard placeholder
-- add `./scripts/regenerate_from_amper.sh` so the sample can be rebuilt from a
-  fresh Amper template when the scaffolding changes
+- add `./scripts/regenerate_from_kotlin_toolchain.sh` so the sample can be rebuilt from a
+  fresh Kotlin Toolchain template when the scaffolding changes
 
-That combination keeps the sample honest: it stays close to the generated Amper
+That combination keeps the sample honest: it stays close to the generated Kotlin Toolchain
 baseline while still exercising the CI architecture I want to teach.
 
 ## The sample can regenerate itself
@@ -168,17 +168,17 @@ baseline while still exercising the CI architecture I want to teach.
 This repo also includes a maintenance command:
 
 ```bash
-./scripts/regenerate_from_amper.sh
+./scripts/regenerate_from_kotlin_toolchain.sh
 ```
 
-That script reruns `amper init compose-multiplatform`, trims the generated
+That script reruns `kotlin init compose-multiplatform`, trims the generated
 project back to Android + iOS + shared, and then reapplies the project-specific
 adjustments that this CI setup expects.
 
 It deletes and recreates the generated app layer:
 
-- `amper`
-- `amper.bat`
+- `kotlin`
+- `kotlin.bat`
 - `project.yaml`
 - `android-app/`
 - `ios-app/`
@@ -186,7 +186,7 @@ It deletes and recreates the generated app layer:
 
 while preserving the CI files and release helpers that make this setup work.
 
-That gives the project a much better maintenance story. When Amper changes, the
+That gives the project a much better maintenance story. When Kotlin Toolchain changes, the
 sample can be refreshed from a command instead of being rewritten by hand.
 
 ## What "thin CI" actually looks like
@@ -265,7 +265,7 @@ Here is the shape of it:
 case "${job_name}" in
   android-build-debug)
     ci_prepare_android_job
-    ./scripts/ci/run_fastlane_with_amper_logs.sh buildDebug
+    ./scripts/ci/run_fastlane_with_kotlin_logs.sh buildDebug
     ;;
   ios-testflight)
     ci_prepare_ios_testflight_job
@@ -287,7 +287,7 @@ Most of the portability comes from the helper layer under
 
 That layer is responsible for:
 
-- preparing a writable Amper cache
+- preparing a writable Kotlin Toolchain cache
 - setting up Java and PATH consistently
 - detecting the Android SDK
 - running Bundler the same way everywhere
@@ -358,7 +358,7 @@ the platform-specific delivery steps.
 
 That keeps the responsibilities clean:
 
-- Amper builds the project
+- Kotlin Toolchain builds the project
 - Fastlane wraps build and delivery commands
 - shell scripts prepare the environment
 - GitHub Actions orchestrates execution
@@ -369,24 +369,24 @@ Because the job contract lives in the repository, the same jobs can run locally
 that CI runs:
 
 ```bash
-export AMPER_BOOTSTRAP_CACHE_DIR="$PWD/.amper-cache"
+export KOTLIN_CLI_BOOTSTRAP_CACHE_DIR="$PWD/.kotlin-cli-cache"
 ./scripts/ci/run_job.sh android-build-debug
 ./scripts/ci/run_job.sh android-test
 ./scripts/ci/run_job.sh ios-build-debug
 ```
 
-For current Amper-based Android builds, local reproduction also assumes JDK 21.
+For current Kotlin Toolchain-based Android builds, local reproduction also assumes JDK 21.
 On self-hosted macOS runners, I also expect a host-installed Ruby,
-preferably from Homebrew, and lets the shared CI helper install the Bundler
+preferably from Homebrew, and let the shared CI helper install the Bundler
 version required by `Gemfile.lock`.
 
 The iOS build jobs here use a generic iOS Simulator destination for
 `xcodebuild`, and the CLI wrapper keeps `SWIFT_ENABLE_EXPLICIT_MODULES=NO`
 for the command-line path. This repo still preserves a single simulator
 architecture override through `ONLY_ACTIVE_ARCH` and `ARCHS`, because the
-current Amper-backed Kotlin build phase rejects multi-architecture simulator
+current Kotlin Toolchain-backed Kotlin build phase rejects multi-architecture simulator
 builds. That keeps the build independent from a precreated device while also
-respecting Amper's current limitation. The remaining requirement is still that
+respecting Kotlin Toolchain's current limitation. The remaining requirement is still that
 the runner has an iOS Simulator runtime installed in Xcode.
 
 That distinction matters on GitHub-hosted macOS images. A repository can avoid
@@ -428,7 +428,7 @@ design problems with store-delivery complexity.
 ## The part worth copying
 
 The most useful thing here is not a specific Actions feature, a specific
-Fastlane lane, or a specific Amper command.
+Fastlane lane, or a specific Kotlin Toolchain command.
 
 It is the decision to stop treating the CI provider as the home of the build
 logic.
@@ -457,7 +457,7 @@ debugged, and shared.
 If the practical reproduction steps are the priority, start with the
 [README](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/README.md).
 If the practical maintenance story is the priority, start with
-[`./scripts/regenerate_from_amper.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh).
+[`./scripts/regenerate_from_kotlin_toolchain.sh`](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_kotlin_toolchain.sh).
 
 ## Trade-offs and when this approach is worth it
 
@@ -518,4 +518,4 @@ That makes it a good fit for engineering teams that treat delivery as part of th
 - [Article source](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/docs/portable-kmp-ci.md)
 - [CI workflow](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.github/workflows/mobile-ci.yml)
 - [GitLab CI adapter](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/.gitlab-ci.yml)
-- [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh)
+- [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_kotlin_toolchain.sh)

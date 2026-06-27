@@ -1,5 +1,5 @@
 product:
-  type: lib
+  type: kmp/lib
   platforms: [android, iosArm64, iosSimulatorArm64, iosX64]
 
 dependencies:

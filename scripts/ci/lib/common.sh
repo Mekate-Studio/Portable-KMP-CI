@@ -18,8 +18,8 @@ ci_require_cmd() {
 }
 
 ci_prepare_workspace() {
-  mkdir -p "${AMPER_BOOTSTRAP_CACHE_DIR}"
-  chmod +x "${CI_PROJECT_DIR}/amper" "${CI_PROJECT_DIR}"/scripts/ci/*.sh
+  mkdir -p "${KOTLIN_CLI_BOOTSTRAP_CACHE_DIR}"
+  chmod +x "${CI_PROJECT_DIR}/kotlin" "${CI_PROJECT_DIR}"/scripts/ci/*.sh
 }
 
 ci_set_java_home() {

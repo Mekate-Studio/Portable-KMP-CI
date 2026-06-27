@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="760" viewBox="0 0 1200 760" role="img" aria-labelledby="title desc">
   <title id="title">Portable KMP CI architecture</title>
-  <desc id="desc">An editorial diagram showing CI orchestration flowing through repo scripts, Fastlane, and Amper.</desc>
+  <desc id="desc">An editorial diagram showing CI orchestration flowing through repo scripts, Fastlane, and Kotlin Toolchain.</desc>
   <defs>
     <linearGradient id="hero" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#0f172a"/>
@@ -61,7 +61,7 @@
 
   <rect x="898" y="300" width="84" height="30" rx="15" fill="#fee2e2"/>
   <text x="940" y="320" text-anchor="middle" class="badge">Step 4</text>
-  <text x="898" y="370" class="sectionTitle">Amper + Project</text>
+  <text x="898" y="370" class="sectionTitle">Kotlin Toolchain + Project</text>
   <text x="898" y="414" class="sectionBody">Android app</text>
   <text x="898" y="446" class="sectionBody">iOS app</text>
   <text x="898" y="478" class="sectionBody">Shared Kotlin code</text>

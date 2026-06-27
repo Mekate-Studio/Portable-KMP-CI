@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title desc">
-  <title id="title">What changed from the raw Amper template</title>
-  <desc id="desc">An editorial comparison between the generated Amper scaffold and the final portable CI sample.</desc>
+  <title id="title">What changed from the raw Kotlin Toolchain template</title>
+  <desc id="desc">An editorial comparison between the generated Kotlin Toolchain scaffold and the final portable CI sample.</desc>
   <defs>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
       <feDropShadow dx="0" dy="12" stdDeviation="18" flood-color="#0f172a" flood-opacity="0.12"/>
@@ -15,8 +15,8 @@
     </style>
   </defs>
   <rect width="1200" height="820" fill="#f8fafc"/>
-  <text x="70" y="82" class="title">What changed from the raw Amper template?</text>
-  <text x="70" y="118" class="sub">The sample starts from `amper init compose-multiplatform` and then trims and overlays only what the CI pattern needs.</text>
+  <text x="70" y="82" class="title">What changed from the raw Kotlin Toolchain template?</text>
+  <text x="70" y="118" class="sub">The sample starts from `kotlin init compose-multiplatform` and then trims and overlays only what the CI pattern needs.</text>
 
   <g filter="url(#shadow)">
     <rect x="70" y="178" width="430" height="540" rx="28" fill="#ffffff"/>
@@ -25,13 +25,13 @@
 
   <rect x="96" y="204" width="108" height="30" rx="15" fill="#dbeafe"/>
   <text x="150" y="224" text-anchor="middle" class="item">Generated</text>
-  <text x="110" y="278" class="cardTitle">Raw Amper scaffold</text>
+  <text x="110" y="278" class="cardTitle">Raw Kotlin Toolchain scaffold</text>
   <text x="110" y="336" class="item">+ android-app/</text>
   <text x="110" y="382" class="item">+ ios-app/</text>
   <text x="110" y="428" class="item">+ shared/</text>
   <text x="110" y="474" class="item">+ jvm-app/</text>
   <text x="110" y="520" class="item">+ project.yaml</text>
-  <text x="110" y="566" class="item">+ amper wrappers</text>
+  <text x="110" y="566" class="item">+ kotlin wrappers</text>
   <text x="110" y="640" class="muted">Good starting point,</text>
   <text x="110" y="672" class="muted">but not yet a reusable CI sample.</text>
 

@@ -4,7 +4,7 @@ title: Portable KMP CI Sample
 
 # Portable KMP CI Sample
 
-A reproducible Kotlin Multiplatform mobile CI sample built with Amper, Fastlane, and GitHub Actions.
+A reproducible Kotlin Multiplatform mobile CI sample built with Kotlin Toolchain, Fastlane, and GitHub Actions.
 
 ![Portable KMP CI architecture](./assets/portable-ci-architecture.svg)
 
@@ -20,7 +20,7 @@ A reproducible Kotlin Multiplatform mobile CI sample built with Amper, Fastlane,
 - thin GitHub Actions workflows
 - repository-owned CI job dispatch
 - Fastlane as the command layer
-- Amper as the build system
+- Kotlin Toolchain as the build system
 - a self-refreshing sample project scaffold
 
 ## Why This Sample Exists
@@ -29,18 +29,18 @@ Most CI examples stop at a workflow file. This one tries to show the whole patte
 
 - how to keep CI provider YAML thin
 - how to make the same jobs runnable locally
-- how to keep the sample refreshable as the Amper template evolves
+- how to keep the sample refreshable as the Kotlin Toolchain template evolves
 
 ## Local Maintenance
 
-When the Amper template changes, regenerate the sample app layer with:
+When the Kotlin Toolchain template changes, regenerate the sample app layer with:
 
 ```bash
-./scripts/regenerate_from_amper.sh
+./scripts/regenerate_from_kotlin_toolchain.sh
 ```
 
 ## View source on GitHub
 
 - [Repository root](https://github.com/Mekate-Studio/Portable-KMP-CI)
 - [Article source](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/docs/portable-kmp-ci.md)
-- [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_amper.sh)
+- [Regeneration script](https://github.com/Mekate-Studio/Portable-KMP-CI/blob/main/scripts/regenerate_from_kotlin_toolchain.sh)

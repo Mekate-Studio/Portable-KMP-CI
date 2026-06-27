@@ -19,17 +19,17 @@ case "${job_name}" in
   android-build-debug)
     ci_prepare_android_job
     cd "${CI_PROJECT_DIR}"
-    ./scripts/ci/run_fastlane_with_amper_logs.sh buildDebug "$@"
+    ./scripts/ci/run_fastlane_with_kotlin_logs.sh buildDebug "$@"
     ;;
   android-build-release)
     ci_prepare_android_job
     cd "${CI_PROJECT_DIR}"
-    ./scripts/ci/run_fastlane_with_amper_logs.sh buildRelease "$@"
+    ./scripts/ci/run_fastlane_with_kotlin_logs.sh buildRelease "$@"
     ;;
   android-test)
     ci_prepare_android_job
     cd "${CI_PROJECT_DIR}"
-    ./scripts/ci/run_fastlane_with_amper_logs.sh test "$@"
+    ./scripts/ci/run_fastlane_with_kotlin_logs.sh test "$@"
     ;;
   ios-build-debug)
     ci_prepare_ios_job

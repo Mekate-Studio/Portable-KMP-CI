@@ -1,7 +1,7 @@
 # Portable KMP CI Sample
 
 This repository is a minimal Kotlin Multiplatform sample for a portable mobile
-CI setup built with Amper, Fastlane, GitHub Actions, and GitLab CI.
+CI setup built with Kotlin Toolchain, Fastlane, GitHub Actions, and GitLab CI.
 
 It is intentionally small:
 
@@ -12,12 +12,12 @@ It is intentionally small:
 - `.gitlab-ci.yml`
 - `fastlane/`
 - `scripts/ci/`
-- `scripts/regenerate_from_amper.sh`
+- `scripts/regenerate_from_kotlin_toolchain.sh`
 
 The app itself started from:
 
 ```bash
-amper init compose-multiplatform
+kotlin init compose-multiplatform
 ```
 
 and was then trimmed down to a mobile-only shape by removing the generated JVM
@@ -26,13 +26,13 @@ module.
 You can refresh the generated app layer in place with:
 
 ```bash
-./scripts/regenerate_from_amper.sh
+./scripts/regenerate_from_kotlin_toolchain.sh
 ```
 
-That script deletes and recreates the Amper-generated app layer:
+That script deletes and recreates the Kotlin Toolchain-generated app layer:
 
-- `amper`
-- `amper.bat`
+- `kotlin`
+- `kotlin.bat`
 - `project.yaml`
 - `android-app/`
 - `ios-app/`
@@ -67,14 +67,14 @@ It also shows the same repo-owned job contract through multiple CI adapters:
 
 ## Local smoke test
 
-Set a writable Amper cache:
+Set a writable Kotlin Toolchain cache:
 
 ```bash
-export AMPER_BOOTSTRAP_CACHE_DIR="$PWD/.amper-cache"
+export KOTLIN_CLI_BOOTSTRAP_CACHE_DIR="$PWD/.kotlin-cli-cache"
 ```
 
 Use JDK 21 for local runs. The GitHub Actions workflows in this repo also pin
-Temurin 21 because the current Amper Android integration requires it.
+Temurin 21 because the current Kotlin Toolchain Android integration requires it.
 
 Run the shared jobs:
 
@@ -89,12 +89,12 @@ Those jobs run `bundle install` through the shared CI helper layer, so you do
 not need a separate manual Bundler step just to smoke-test the sample.
 
 Run those smoke-test commands sequentially when using a single local checkout.
-In CI they run in separate jobs, but locally multiple first-run Amper processes
+In CI they run in separate jobs, but locally multiple first-run Kotlin Toolchain processes
 can contend with each other.
 
 The iOS build jobs target a generic iOS Simulator destination and then force a
 single simulator architecture that matches the host machine. That avoids both a
-precreated device dependency and Amper's current limitation around building
+precreated device dependency and Kotlin Toolchain's current limitation around building
 multiple simulator architectures in one pass. The remaining host requirement is
 that Xcode has an iOS Simulator runtime installed.
 
@@ -119,7 +119,7 @@ Recommended setup:
 1. Add your Mac as a self-hosted runner for this repository in GitHub.
 2. Give it the labels `self-hosted`, `macOS`, `ARM64`, and `kmp-sample`.
 3. Install JDK 21 on that Mac runner. The workflow pins Temurin 21, and the
-   current Amper Android integration expects a Java 21 runtime.
+   current Kotlin Toolchain Android integration expects a Java 21 runtime.
 4. Install a working host Ruby on that Mac runner, preferably via
    `brew install ruby`. The shared CI helper will install the Bundler version
    required by `Gemfile.lock` automatically. This sample's self-hosted

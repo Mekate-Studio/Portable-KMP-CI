@@ -26,7 +26,7 @@ concurrency:
 
 env:
   DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-  AMPER_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.amper-cache
+  KOTLIN_CLI_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.kotlin-cli-cache
 
 jobs:
   android_build_debug:

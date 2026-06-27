@@ -15,7 +15,7 @@ concurrency:
 
 env:
   DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
-  AMPER_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.amper-cache
+  KOTLIN_CLI_BOOTSTRAP_CACHE_DIR: ${{ github.workspace }}/.kotlin-cli-cache
 
 jobs:
   refresh_gemfile_lock:
@@ -77,7 +77,7 @@ jobs:
             dependencies
             ruby
 
-  refresh_amper_template:
+  refresh_kotlin_toolchain_template:
     if: github.ref_name == github.event.repository.default_branch
     runs-on: macos-15
     steps:
@@ -94,18 +94,18 @@ jobs:
 
       - uses: android-actions/setup-android@v4
 
-      - name: Regenerate Amper app layer
-        run: ./scripts/regenerate_from_amper.sh
+      - name: Regenerate Kotlin Toolchain app layer
+        run: ./scripts/regenerate_from_kotlin_toolchain.sh
 
       - name: Smoke test portable Android debug job
         run: ./scripts/ci/run_job.sh android-build-debug
 
       - name: Detect regenerated changes
-        id: amper_changes
+        id: kotlin_toolchain_changes
         run: |
           if git diff --quiet -- \
-            amper \
-            amper.bat \
+            kotlin \
+            kotlin.bat \
             project.yaml \
             android-app \
             ios-app \
@@ -115,21 +115,21 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create Amper refresh PR
-        if: steps.amper_changes.outputs.changed == 'true'
+      - name: Create Kotlin Toolchain refresh PR
+        if: steps.kotlin_toolchain_changes.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
-          branch: chore/dependency-refresh-amper
+          branch: chore/dependency-refresh-kotlin-toolchain
           delete-branch: true
-          commit-message: "chore(amper): refresh generated app layer"
-          title: "chore(amper): refresh generated app layer"
+          commit-message: "chore(kotlin-toolchain): refresh generated app layer"
+          title: "chore(kotlin-toolchain): refresh generated app layer"
           body: |
-            Automated weekly Amper regeneration.
+            Automated weekly Kotlin Toolchain regeneration.
 
             Changes in this PR:
-            - reruns `./scripts/regenerate_from_amper.sh`
+            - reruns `./scripts/regenerate_from_kotlin_toolchain.sh`
             - captures template and generated dependency drift
             - runs the portable Android debug smoke job
           labels: |
             dependencies
-            amper
+            kotlin-toolchain

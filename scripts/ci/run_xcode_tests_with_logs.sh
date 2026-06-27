@@ -12,8 +12,6 @@ project_path="${project_root}/ios-app/module.xcodeproj"
 
 mkdir -p "${log_dir}" "${derived_data_dir}"
 
-echo "Using KOTLIN_IOS_BUILDER=${KOTLIN_IOS_BUILDER:-gradle}"
-echo "Using GRADLE_USER_HOME=${GRADLE_USER_HOME:-${project_root}/.gradle-user-home}"
 echo "Using SWIFT_ENABLE_EXPLICIT_MODULES=${SWIFT_ENABLE_EXPLICIT_MODULES:-NO}"
 
 simulator_udid="$(

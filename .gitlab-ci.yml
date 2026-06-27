@@ -8,14 +8,14 @@ stages:
   - production
 
 variables:
-  AMPER_BOOTSTRAP_CACHE_DIR: "$CI_PROJECT_DIR/.amper-cache"
+  KOTLIN_CLI_BOOTSTRAP_CACHE_DIR: "$CI_PROJECT_DIR/.kotlin-cli-cache"
   LANG: "en_US.UTF-8"
   LC_ALL: "en_US.UTF-8"
 
 cache:
-  key: amper-cache
+  key: kotlin-cli-cache
   paths:
-    - .amper-cache/
+    - .kotlin-cli-cache/
 
 .android_job:
   tags:

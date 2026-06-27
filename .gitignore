@@ -3,6 +3,8 @@
 /.gradle-user-home/
 /.amper/
 /.amper-cache/
+/.kotlin/
+/.kotlin-cli-cache/
 /build/
 /android-app/build/
 /ios-app/build/

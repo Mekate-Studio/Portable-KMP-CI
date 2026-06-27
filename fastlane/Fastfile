@@ -18,16 +18,16 @@ def project_root
   File.expand_path("..", __dir__)
 end
 
-def amper_path
-  File.join(project_root, "amper")
+def kotlin_path
+  File.join(project_root, "kotlin")
 end
 
-def amper_cache_dir
-  ENV["AMPER_BOOTSTRAP_CACHE_DIR"] || File.join(project_root, ".amper-cache")
+def kotlin_cli_cache_dir
+  ENV["KOTLIN_CLI_BOOTSTRAP_CACHE_DIR"] || File.join(project_root, ".kotlin-cli-cache")
 end
 
-def amper!(command)
-  sh("cd '#{project_root}' && AMPER_BOOTSTRAP_CACHE_DIR='#{amper_cache_dir}' '#{amper_path}' #{command}")
+def kotlin!(command)
+  sh("cd '#{project_root}' && KOTLIN_CLI_BOOTSTRAP_CACHE_DIR='#{kotlin_cli_cache_dir}' '#{kotlin_path}' #{command}")
 end
 
 def latest_android_artifact!(pattern: "build/**/*.{apk,aab}")
@@ -143,18 +143,18 @@ platform :android do
 
   desc "Builds the debug code"
   lane :buildDebug do
-    amper!("build -m android-app -p android -v debug")
+    kotlin!("build -m android-app -p android -v debug")
   end
 
   desc "Builds the release code"
   lane :buildRelease do
-    amper!("build -m android-app -p android -v release")
+    kotlin!("build -m android-app -p android -v release")
     sh("cd '#{project_root}' && ./scripts/ci/build_android_aab.sh")
   end
 
   desc "Runs all the tests"
   lane :test do
-    amper!("test -m shared -p android")
+    kotlin!("test -m shared -p android")
   end
 
   desc "Submit a new Internal Build to Play Store"

@@ -14,7 +14,7 @@ count_known_d8_kotlin_metadata_warnings() {
 
 count_error_matches() {
   log_file="$1"
-  temp_matches="${TMPDIR:-/tmp}/amper-log-grep-count.$$"
+  temp_matches="${TMPDIR:-/tmp}/kotlin-log-grep-count.$$"
 
   grep -E -n "${error_match_pattern}" "${log_file}" >"${temp_matches}" 2>/dev/null || true
   grep -E -v "${known_d8_kotlin_metadata_pattern}|${known_debug_noise_pattern}" "${temp_matches}" 2>/dev/null | wc -l | tr -d ' ' || true
@@ -37,8 +37,8 @@ print_log_tail() {
 
 print_fastlane_error_matches() {
   log_file="$1"
-  temp_matches="${TMPDIR:-/tmp}/amper-log-grep.$$"
-  temp_filtered="${TMPDIR:-/tmp}/amper-log-grep-filtered.$$"
+  temp_matches="${TMPDIR:-/tmp}/kotlin-log-grep.$$"
+  temp_filtered="${TMPDIR:-/tmp}/kotlin-log-grep-filtered.$$"
   suppressed_count="$(count_known_d8_kotlin_metadata_warnings "${log_file}")"
 
   grep -E -n "${error_match_pattern}" "$log_file" >"${temp_matches}" 2>/dev/null || true
@@ -97,6 +97,6 @@ if ! print_build_logs; then
   fi
 fi
 
-if [ "${mode}" = "amper" ]; then
+if [ "${mode}" = "kotlin" ]; then
   print_task_logs
 fi

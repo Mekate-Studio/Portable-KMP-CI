@@ -2,7 +2,7 @@
 
 set -eu
 
-lane="${1:?Usage: run_fastlane_with_amper_logs.sh <lane>}"
+lane="${1:?Usage: run_fastlane_with_kotlin_logs.sh <lane>}"
 shift || true
 
 if bundle exec fastlane "$lane" "$@"; then
@@ -10,7 +10,7 @@ if bundle exec fastlane "$lane" "$@"; then
 fi
 
 echo
-echo "fastlane failed; printing recent Amper/Gradle logs if present..."
+echo "fastlane failed; printing recent Kotlin Toolchain/Gradle logs if present..."
 ./scripts/ci/print_recent_logs.sh fastlane
 
 exit 1
