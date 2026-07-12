@@ -20,7 +20,7 @@ env:
 jobs:
   refresh_gemfile_lock:
     if: github.ref_name == github.event.repository.default_branch
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
 
@@ -79,7 +79,7 @@ jobs:
 
   refresh_kotlin_toolchain_template:
     if: github.ref_name == github.event.repository.default_branch
-    runs-on: macos-15
+    runs-on: macos-26
     steps:
       - uses: actions/checkout@v6
 
